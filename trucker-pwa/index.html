@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <title>Trucker Compass</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- PWA Essentials -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").then(() => {
+        console.log("SW registrado");
+      });
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #04444f 0%, #011317 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+    #scroll-banner {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      position: absolute;
+      top: 0.25rem;
+      left: 0;
+      padding: 0.5rem;
+      font-size: 0.9rem;
+      z-index: 10;
+    }
+    .ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll-left 25s linear infinite;
+    }
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 3rem 0 0.25rem;
+    }
+    #welcome {
+      font-size: 1.1rem;
+      color: #ccc;
+      margin-bottom: 2rem;
+    }
+    .positive { color: #4ade80; text-shadow: 0 0 6px rgba(74,222,128,0.7); }
+    .negative { color: #f87171; text-shadow: 0 0 6px rgba(248,113,113,0.7); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 1rem;
+    }
+    .grid button {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid #00f7ff;
+      border-radius: 15px;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .grid button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 255, 255, 0.3);
+    }
+    .grid button svg {
+      width: 40px;
+      height: 40px;
+      stroke: #00f7ff;
+      fill: none;
+      stroke-width: 2;
+    }
+    .mic-btn {
+      background: none;
+      border: none;
+      margin: 1rem 0 2rem;
+      cursor: pointer;
+      filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.4));
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .mic-btn:hover {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.6));
+    }
+    .mic-btn svg {
+      width: 50px;
+      height: 50px;
+      stroke: #00f7ff;
+      fill: none;
+      stroke-width: 2;
+    }
+    .reviews-section, .settings-section {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(0, 255, 255, 0.03);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+    .reviews-section h2, .settings-section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .review-card {
+      background: rgba(0, 255, 255, 0.05);
+      padding: 0.75rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+    .review-card::after {
+      content: " \2605";
+      color: gold;
+      font-size: 1rem;
+    }
+    .report-incident {
+      background: radial-gradient(circle, #ffe066 0%, #ffd000 100%);
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 208, 0, 0.9);
+      transition: transform 0.2s ease;
+    }
+    .report-incident:hover {
+      transform: scale(1.05);
+    }
+    .support-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 255, 255, 0.08);
+      border: 2px solid #00f7ff;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease;
+    }
+    .support-btn:hover {
+      transform: scale(1.05);
+    }
+    .support-btn svg {
+      stroke: #00f7ff;
+      fill: none;
+      stroke-width: 2;
+    }
+    .settings-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .settings-toggle label {
+      flex: 1;
+      color: #ddd;
+    }
+    .settings-toggle input {
+      transform: scale(1.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="scroll-banner">
+    <div class="ticker-text">
+      <span class="positive">3 parking spots available</span>
+      • Fuel at Station X <span class="negative">$4.59</span>
+      • <span class="positive">Next 10 mi clear</span>
+      • No reportable <span class="positive">issues</span>
+    </div>
+  </div>
+  <h1>Trucker Compass</h1>
+  <div id="welcome">Welcome, Jean</div>
+  <div class="grid">
+    <button><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M10 8H14C15.1 8 16 8.9 16 10C16 11.1 15.1 12 14 12H10V16"/></svg>Parking</button>
+    <button><svg viewBox="0 0 24 24"><path d="M6 2h12l1 9H5l1-9z"/><circle cx="12" cy="17" r="4"/></svg>Fuel</button>
+    <button><svg viewBox="0 0 24 24"><path d="M2 12L10 4L14 20L22 12"/></svg>Road</button>
+    <button><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8V12"/><path d="M12 16H12.01"/></svg>Alerts</button>
+  </div>
+  <button class="mic-btn" aria-label="Voice Command">
+    <svg viewBox="0 0 24 24"><path d="M12 14A3 3 0 0 0 15 11V5A3 3 0 0 0 9 5V11A3 3 0 0 0 12 14ZM17 11A5 5 0 0 1 12 16A5 5 0 0 1 7 11H5A7 7 0 0 0 12 18.938V22H14V18.938A7 7 0 0 0 21 11H19Z"/></svg>
+  </button>
+  <div class="reviews-section">
+    <h2>Truck Stop Reviews</h2>
+    <div class="review-card">Cleanliness: 4.0</div>
+    <div class="review-card">Safety: 3.4</div>
+    <div class="review-card">Food: 3.5</div>
+    <button class="report-incident">Report Issue at Stop</button>
+  </div>
+  <div class="settings-section">
+    <h2>Settings</h2>
+    <div class="settings-toggle"><label>Data Saver Mode</label><input type="checkbox" checked /></div>
+    <div class="settings-toggle"><label>Download Maps For Offline</label><input type="checkbox" /></div>
+    <div class="settings-toggle"><label>Join Beta Testing</label><input type="checkbox" /></div>
+  </div>
+  <button class="support-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 1C7 1 3 5 3 10v4a3 3 0 006 0v-4a3 3 0 016 0v4a3 3 0 006 0v-4c0-5-4-9-9-9z"/></svg>
+    Contact Support
+  </button>
+</body>
+</html>
